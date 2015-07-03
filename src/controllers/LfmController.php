@@ -1,18 +1,19 @@
-<?php namespace Tsawler\Laravelfilemanager\controllers;
+<?php
+
+namespace Tsawler\Laravelfilemanager\controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
-use Intervention\Image\Facades\Image;
 
 /**
  * Class LfmController
  * @package Tsawler\Laravelfilemanager\controllers
  */
-class LfmController extends Controller {
+class LfmController extends Controller
+{
 
     /**
      * @var
@@ -24,11 +25,9 @@ class LfmController extends Controller {
      */
     public function __construct()
     {
-        if ((Session::has('lfm_type')) && (Session::get('lfm_type') == 'Files'))
-        {
+        if ((Session::has('lfm_type')) && (Session::get('lfm_type') == 'Files')) {
             $this->file_location = Config::get('lfm.files_dir');
-        } else
-        {
+        } else {
             $this->file_location = Config::get('lfm.images_dir');
         }
     }
@@ -41,22 +40,18 @@ class LfmController extends Controller {
      */
     public function show()
     {
-        if ((Input::has('type')) && (Input::get('type') == "Files"))
-        {
+        if ((Input::has('type')) && (Input::get('type') == "Files")) {
             Session::put('lfm_type', 'Files');
             $this->file_location = Config::get('lfm.files_dir');
-        } else
-        {
+        } else {
             Session::put('lfm_type', 'Images');
             $this->file_location = Config::get('lfm.images_dir');
         }
 
-        if (Input::has('base'))
-        {
+        if (Input::has('base')) {
             $working_dir = Input::get('base');
             $base = $this->file_location . Input::get('base') . "/";
-        } else
-        {
+        } else {
             $working_dir = "/";
             $base = $this->file_location;
         }
@@ -65,5 +60,4 @@ class LfmController extends Controller {
             ->with('base', $base)
             ->with('working_dir', $working_dir);
     }
-
 }

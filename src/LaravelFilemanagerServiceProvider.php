@@ -1,14 +1,16 @@
-<?php namespace Tsawler\Laravelfilemanager;
+<?php
+
+namespace Tsawler\Laravelfilemanager;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
-
 
 /**
  * Class LaravelFilemanagerServiceProvider
  * @package Tsawler\Laravelfilemanager
  */
-class LaravelFilemanagerServiceProvider extends ServiceProvider {
+class LaravelFilemanagerServiceProvider extends ServiceProvider
+{
 
     /**
      * Bootstrap the application services.
@@ -17,23 +19,24 @@ class LaravelFilemanagerServiceProvider extends ServiceProvider {
      */
     public function boot()
     {
-        if (Config::get('lfm.use_package_routes'))
+        if (Config::get('lfm.use_package_routes')) {
             include __DIR__ . '/routes.php';
+        }
 
-        $this->loadTranslationsFrom(__DIR__.'/lang', 'laravel-filemanager');
+        $this->loadTranslationsFrom(__DIR__ . '/lang', 'laravel-filemanager');
 
-        $this->loadViewsFrom(__DIR__.'/views', 'laravel-filemanager');
+        $this->loadViewsFrom(__DIR__ . '/views', 'laravel-filemanager');
 
         $this->publishes([
             __DIR__ . '/config/lfm.php' => config_path('lfm.php', 'config'),
         ], 'lfm_config');
 
         $this->publishes([
-            __DIR__.'/../public' => public_path('vendor/laravel-filemanager'),
+            __DIR__ . '/../public' => public_path('vendor/laravel-filemanager'),
         ], 'lfm_public');
 
         $this->publishes([
-            __DIR__.'/views' => base_path('resources/views/vendor/laravel-filemanager'),
+            __DIR__ . '/views' => base_path('resources/views/vendor/laravel-filemanager'),
         ], 'lfm_views');
 
     }
@@ -45,10 +48,8 @@ class LaravelFilemanagerServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-        $this->app['laravel-filemanager'] = $this->app->share(function ()
-        {
+        $this->app['laravel-filemanager'] = $this->app->share(function () {
             return true;
         });
     }
-
 }

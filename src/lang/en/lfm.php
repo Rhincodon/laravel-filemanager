@@ -18,5 +18,4 @@ return [
     'action'       => 'Action',
     'folder'       => 'Folder',
     'empty_folder' => 'Folder is empty',
-
 ];

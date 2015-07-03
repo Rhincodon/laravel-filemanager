@@ -1,11 +1,11 @@
-<?php namespace Tsawler\Laravelfilemanager\controllers;
+<?php
+
+namespace Tsawler\Laravelfilemanager\controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 use Intervention\Image\Facades\Image;
@@ -14,7 +14,8 @@ use Intervention\Image\Facades\Image;
  * Class ItemsController
  * @package Tsawler\Laravelfilemanager\controllers
  */
-class ItemsController extends Controller {
+class ItemsController extends Controller
+{
 
 
     /**
@@ -26,12 +27,13 @@ class ItemsController extends Controller {
     /**
      * constructor
      */
-    function __construct()
+    public function __construct()
     {
-        if (Session::get('lfm_type') == "Images")
+        if (Session::get('lfm_type') == "Images") {
             $this->file_location = Config::get('lfm.images_dir');
-        else
+        } else {
             $this->file_location = Config::get('lfm.files_dir');
+        }
     }
 
 
@@ -42,20 +44,17 @@ class ItemsController extends Controller {
      */
     public function getFiles()
     {
-        if (Input::has('base'))
-        {
+        if (Input::has('base')) {
             $files = File::files(base_path($this->file_location . Input::get('base')));
             $all_directories = File::directories(base_path($this->file_location . Input::get('base')));
-        } else
-        {
+        } else {
             $files = File::files(base_path($this->file_location));
             $all_directories = File::directories(base_path($this->file_location));
         }
 
         $directories = [];
 
-        foreach ($all_directories as $directory)
-        {
+        foreach ($all_directories as $directory) {
             $directories[] = basename($directory);
         }
 
@@ -63,45 +62,38 @@ class ItemsController extends Controller {
         $icon_array = Config::get('lfm.file_icon_array');
         $type_array = Config::get('lfm.file_type_array');
 
-        foreach ($files as $file)
-        {
+        foreach ($files as $file) {
             $file_name = $file;
             $file_size = 1;
             $extension = strtolower(File::extension($file_name));
 
-            if (array_key_exists($extension, $icon_array))
-            {
+            if (array_key_exists($extension, $icon_array)) {
                 $icon = $icon_array[$extension];
                 $type = $type_array[$extension];
-            } else
-            {
+            } else {
                 $icon = "fa-file";
-                $type= "File";
+                $type = "File";
             }
 
             $file_created = filemtime($file);
-            $file_type = '';
             $file_info[] = [
-                'name'      => $file_name,
-                'size'      => $file_size,
-                'created'   => $file_created,
-                'type'      => $file_type,
+                'name' => $file_name,
+                'size' => $file_size,
+                'created' => $file_created,
                 'extension' => $extension,
-                'icon'      => $icon,
-                'type'      => $type,
+                'icon' => $icon,
+                'type' => $type,
             ];
         }
 
 
-        if (Input::get('show_list') == 1)
-        {
+        if (Input::get('show_list') == 1) {
             return View::make('laravel-filemanager::files-list')
                 ->with('directories', $directories)
                 ->with('base', Input::get('base'))
                 ->with('file_info', $file_info)
                 ->with('dir_location', $this->file_location);
-        } else
-        {
+        } else {
             return View::make('laravel-filemanager::files')
                 ->with('files', $files)
                 ->with('directories', $directories)
@@ -119,63 +111,55 @@ class ItemsController extends Controller {
      */
     public function getImages()
     {
-        if (Input::has('base'))
-        {
+        if (Input::has('base')) {
             $files = File::files(base_path($this->file_location . Input::get('base')));
             $all_directories = File::directories(base_path($this->file_location . Input::get('base')));
-        } else
-        {
+        } else {
             $files = File::files(base_path($this->file_location));
             $all_directories = File::directories(base_path($this->file_location));
         }
 
         $directories = [];
 
-        foreach ($all_directories as $directory)
-        {
-            if (basename($directory) != "thumbs")
-            {
+        foreach ($all_directories as $directory) {
+            if (basename($directory) != "thumbs") {
                 $directories[] = basename($directory);
             }
         }
 
         $file_info = [];
 
-        foreach ($files as $file)
-        {
+        foreach ($files as $file) {
             $file_name = $file;
             $file_size = number_format((Image::make($file)->filesize() / 1024), 2, ".", "");
-            if ($file_size > 1000)
-            {
+            if ($file_size > 1000) {
                 $file_size = number_format((Image::make($file)->filesize() / 1024), 2, ".", "") . " Mb";
-            } else
-            {
+            } else {
                 $file_size = $file_size . " Kb";
             }
             $file_created = filemtime($file);
             $file_type = Image::make($file)->mime();
             $file_info[] = [
-                'name'    => $file_name,
-                'size'    => $file_size,
+                'name' => $file_name,
+                'size' => $file_size,
                 'created' => $file_created,
-                'type'    => $file_type
+                'type' => $file_type
             ];
         }
 
-        if ((Session::has('lfm_type')) && (Session::get('lfm_type') == "Images"))
+        if ((Session::has('lfm_type')) && (Session::get('lfm_type') == "Images")) {
             $dir_location = Config::get('lfm.images_url');
-        else
+        } else {
             $dir_location = Config::get('lfm.files_url');
+        }
 
-        if (Input::get('show_list') == 1)
-        {
+        if (Input::get('show_list') == 1) {
             return View::make('laravel-filemanager::images-list')
                 ->with('directories', $directories)
                 ->with('base', Input::get('base'))
                 ->with('file_info', $file_info)
                 ->with('dir_location', $dir_location);
-        } else
-        {
+        } else {
             return View::make('laravel-filemanager::images')
                 ->with('files', $files)
                 ->with('directories', $directories)
@@ -184,5 +168,4 @@ class ItemsController extends Controller {
         }
 
     }
-
 }

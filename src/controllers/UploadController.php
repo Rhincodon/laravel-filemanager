@@ -1,4 +1,6 @@
-<?php namespace Tsawler\Laravelfilemanager\controllers;
+<?php
+
+namespace Tsawler\Laravelfilemanager\controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
@@ -12,7 +14,8 @@ use Intervention\Image\Facades\Image;
  * Class UploadController
  * @package Tsawler\Laravelfilemanager\controllers
  */
-class UploadController extends Controller {
+class UploadController extends Controller
+{
 
     /**
      * @var
@@ -23,40 +26,36 @@ class UploadController extends Controller {
     /**
      * constructor
      */
-    function __construct()
+    public function __construct()
     {
-        if (Session::get('lfm_type') == "Images")
+        if (Session::get('lfm_type') == "Images") {
             $this->file_location = Config::get('lfm.images_dir');
-        else
+        } else {
             $this->file_location = Config::get('lfm.files_dir');
+        }
     }
 
 
     /**
      * Upload an image/file and (for images) create thumbnail
      *
-     * @param UploadRequest $request
      * @return string
      */
     public function upload()
     {
         // sanity check
-        if ( ! Input::hasFile('file_to_upload'))
-        {
+        if (!Input::hasFile('file_to_upload')) {
             // there ws no uploded file
             return "You must choose a file!";
-            exit;
         }
 
 
-        if (Session::get('lfm_type') == "Images")
-        {
+        if (Session::get('lfm_type') == "Images") {
             $file = Input::file('file_to_upload');
             $working_dir = Input::get('working_dir');
             $destinationPath = base_path() . "/" . $this->file_location;
 
-            if (strlen($working_dir) > 1)
-            {
+            if (strlen($working_dir) > 1) {
                 $destinationPath .= $working_dir . "/";
             }
 
@@ -67,8 +66,7 @@ class UploadController extends Controller {
 
             Input::file('file_to_upload')->move($destinationPath, $new_filename);
 
-            if (!File::exists($destinationPath . "thumbs"))
-            {
+            if (!File::exists($destinationPath . "thumbs")) {
                 File::makeDirectory($destinationPath . "thumbs");
             }
 
@@ -78,14 +76,12 @@ class UploadController extends Controller {
             unset($thumb_img);
 
             return "OK";
-        } else
-        {
+        } else {
             $file = Input::file('file_to_upload');
             $working_dir = Input::get('working_dir');
             $destinationPath = base_path() . "/" . $this->file_location;
 
-            if (strlen($working_dir) > 1)
-            {
+            if (strlen($working_dir) > 1) {
                 $destinationPath .= $working_dir . "/";
             }
 
@@ -94,10 +90,8 @@ class UploadController extends Controller {
 
             $new_filename = Str::slug(str_replace($extension, '', $filename)) . "." . $extension;
 
-            if (File::exists($destinationPath . $new_filename))
-            {
+            if (File::exists($destinationPath . $new_filename)) {
                 return "A file with this name already exists!";
-                exit;
             }
 
             Input::file('file_to_upload')->move($destinationPath, $new_filename);
@@ -106,5 +100,4 @@ class UploadController extends Controller {
         }
 
     }
-
 }

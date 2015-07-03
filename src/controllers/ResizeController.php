@@ -1,6 +1,9 @@
-<?php namespace Tsawler\Laravelfilemanager\controllers;
+<?php
+
+namespace Tsawler\Laravelfilemanager\controllers;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\View;
@@ -10,7 +13,8 @@ use Intervention\Image\Facades\Image;
  * Class ResizeController
  * @package Tsawler\Laravelfilemanager\controllers
  */
-class ResizeController extends Controller {
+class ResizeController extends Controller
+{
 
     /**
      * Dipsplay image for resizing
@@ -24,24 +28,23 @@ class ResizeController extends Controller {
         $dir = Input::get('dir');
 
         $original_width = Image::make(base_path() . "/" . Config::get('lfm.images_dir') . $dir . "/" . $image)->width();
-        $original_height = Image::make(base_path() . "/" . Config::get('lfm.images_dir') . $dir . "/" . $image)->height();
+        $original_height = Image::make(
+            base_path() . "/" . Config::get('lfm.images_dir') . $dir . "/" . $image
+        )->height();
 
         $scaled = false;
 
-        if ($original_width > 600)
-        {
+        if ($original_width > 600) {
             $ratio = 600 / $original_width;
             $width = $original_width * $ratio;
             $height = $original_height * $ratio;
             $scaled = true;
-        } else
-        {
+        } else {
             $height = $original_height;
             $width = $original_width;
         }
 
-        if ($height > 400)
-        {
+        if ($height > 400) {
             $ratio = 400 / $original_height;
             $width = $original_width * $ratio;
             $height = $original_height * $ratio;
@@ -66,20 +69,16 @@ class ResizeController extends Controller {
         $img = Input::get('img');
         $dir = Input::get('dir');
         $dataX = Input::get('dataX');
-        $dataY= Input::get('dataY');
+        $dataY = Input::get('dataY');
         $height = Input::get('dataHeight');
         $width = Input::get('dataWidth');
 
-        try
-        {
+        try {
             Image::make(public_path() . $img)->resize($width, $height)->save();
+
             return "OK";
-        } catch (Exception $e)
-        {
-            return "width : " . $width . " height: " . $height;
+        } catch (Exception $e) {
             return $e;
         }
-
     }
-
 }

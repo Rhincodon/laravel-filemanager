@@ -1,4 +1,6 @@
-<?php namespace Tsawler\Laravelfilemanager\controllers;
+<?php
+
+namespace Tsawler\Laravelfilemanager\controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
@@ -12,16 +14,18 @@ use Illuminate\Support\Str;
  * Class FolderController
  * @package Tsawler\Laravelfilemanager\controllers
  */
-class FolderController extends Controller {
+class FolderController extends Controller
+{
 
     protected $file_location;
 
-    function __construct()
+    public function __construct()
     {
-        if (Session::get('lfm_type') == "Images")
+        if (Session::get('lfm_type') == "Images") {
             $this->file_location = Config::get('lfm.images_dir');
-        else
+        } else {
             $this->file_location = Config::get('lfm.files_dir');
+        }
     }
 
 
@@ -35,10 +39,8 @@ class FolderController extends Controller {
         $directories = File::directories(base_path($this->file_location));
         $final_array = [];
 
-        foreach ($directories as $directory)
-        {
-            if (basename($directory) != "thumbs")
-            {
+        foreach ($directories as $directory) {
+            if (basename($directory) != "thumbs") {
                 $final_array[] = basename($directory);
             }
         }
@@ -59,15 +61,13 @@ class FolderController extends Controller {
 
         $path = base_path($this->file_location);
 
-        if (!File::exists($path . "/" . $folder_name))
-        {
+        if (!File::exists($path . "/" . $folder_name)) {
             File::makeDirectory($path . "/" . $folder_name, $mode = 0777, true, true);
+
             return "OK";
-        } else
-        {
+        } else {
             return "A folder with this name already exists!";
         }
 
     }
-
 }

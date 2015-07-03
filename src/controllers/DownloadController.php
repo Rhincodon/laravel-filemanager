@@ -1,4 +1,6 @@
-<?php namespace Tsawler\Laravelfilemanager\controllers;
+<?php
+
+namespace Tsawler\Laravelfilemanager\controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
@@ -10,7 +12,8 @@ use Illuminate\Support\Facades\Session;
  * Class DownloadController
  * @package Tsawler\Laravelfilemanager\controllers
  */
-class DownloadController extends Controller {
+class DownloadController extends Controller
+{
 
     /**
      * @var
@@ -21,12 +24,13 @@ class DownloadController extends Controller {
     /**
      * constructor
      */
-    function __construct()
+    public function __construct()
     {
-        if (Session::get('lfm_type') == "Images")
+        if (Session::get('lfm_type') == "Images") {
             $this->file_location = Config::get('lfm.images_dir');
-        else
+        } else {
             $this->file_location = Config::get('lfm.files_dir');
+        }
     }
 
 
@@ -39,12 +43,12 @@ class DownloadController extends Controller {
     {
         $file_to_download = Input::get('file');
         $dir = Input::get('dir');
+
         return Response::download(base_path()
-            .  "/"
+            . "/"
             . $this->file_location
-            .  $dir
+            . $dir
             . "/"
             . $file_to_download);
     }
-
 }

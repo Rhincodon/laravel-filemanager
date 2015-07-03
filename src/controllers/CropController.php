@@ -1,4 +1,6 @@
-<?php namespace Tsawler\Laravelfilemanager\controllers;
+<?php
+
+namespace Tsawler\Laravelfilemanager\controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
@@ -10,7 +12,8 @@ use Intervention\Image\Facades\Image;
  * Class CropController
  * @package Tsawler\Laravelfilemanager\controllers
  */
-class CropController extends Controller {
+class CropController extends Controller
+{
 
     /**
      * Show crop page
@@ -51,5 +54,4 @@ class CropController extends Controller {
         $thumb_img->fit(200, 200)
             ->save(base_path() . "/" . Config::get('lfm.images_dir') . $dir . "/thumbs/" . basename($img));
     }
-
 }
